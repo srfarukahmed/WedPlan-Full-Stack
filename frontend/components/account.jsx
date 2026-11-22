@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { demoMode, loadIntegrations, platform } from "@/lib/platform";
 import { demoAccounts, demoPassword } from "@/lib/demo";
 import { Photo } from "./catalog";
+import { imageUploadMaxMb } from "@/lib/platform-mode";
 import { useAction, usePlatform, useResource } from "./platform";
 
 export const imageTypes = "image/jpeg,image/png,image/webp,image/avif";
@@ -122,7 +123,7 @@ export function Profile() {
         <label>Choose an image<Input ref={fileInput} type="file" accept={imageTypes} name="image" onChange={(event) => {
           setFile(event.target.files?.[0] ?? null);
           setRemovePhoto(false);
-        }} /><small>JPEG, PNG, WebP or AVIF, up to 5 MB.</small></label>
+        }} /><small>JPEG, PNG, WebP or AVIF, up to {imageUploadMaxMb} MB.</small></label>
         {image && <Button type="button" variant="outline" onClick={() => { setFile(null); setRemovePhoto(true); if (fileInput.current) fileInput.current.value = ""; }}>Remove photo</Button>}
       </section>
       <section className="form-stack panel padded">

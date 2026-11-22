@@ -1,7 +1,7 @@
 import { createAuthClient } from "better-auth/react";
 import { jwtClient } from "better-auth/client/plugins";
 import { demo } from "./demo";
-import { API_URL, demoMode, proxyMode } from "./platform-mode";
+import { API_URL, demoMode, imageUploadMaxMb, proxyMode } from "./platform-mode";
 
 export { demoMode };
 const AUTH_URL = proxyMode ? undefined : process.env.NEXT_PUBLIC_AUTH_URL?.replace(/\/$/, "") || API_URL;
@@ -50,7 +50,7 @@ const live = {
   },
   async logout() { unwrap(await auth.signOut()); },
   async upload(file, purpose) {
-    if (!["image/jpeg", "image/png", "image/webp", "image/avif"].includes(file.type) || file.size > 5 * 1024 * 1024) throw new Error("Choose a JPEG, PNG, WebP, or AVIF image under 5 MB.");
+    if (!["image/jpeg", "image/png", "image/webp", "image/avif"].includes(file.type) || file.size > imageUploadMaxMb * 1024 * 1024) throw new Error("Choose a JPEG, PNG, WebP, or AVIF image up to " + imageUploadMaxMb + " MB.");
     const body = new FormData();
     body.set("image", file);
     body.set("purpose", purpose);

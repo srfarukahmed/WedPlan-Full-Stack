@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { platform } from "@/lib/platform";
+import { imageUploadMaxMb } from "@/lib/platform-mode";
 import { categories, nextReviewStatuses, visible } from "@/lib/demo";
 import { Gate, Loading, Problem, useAction, usePlatform, useResource } from "./platform";
 import { money, Photo, vendorName } from "./catalog";
@@ -133,7 +134,7 @@ function ServiceForm({ service }) {
       <label>Price (BDT)<Input name="price" type="number" min="1" max="100000000" defaultValue={service?.price} required /></label>
       <label>Location<Input name="location" defaultValue={service?.location} maxLength={120} required /></label>
       {service?.images?.length > 0 && <div className="thumbnails">{service.images.map((src, index) => <Photo key={index} src={src} alt={"Current photo " + (index + 1)} />)}</div>}
-      <label>{service ? "Replace photos (optional)" : "Service photos"}<Input name="images" type="file" accept={imageTypes} multiple required={!service} /><small>Choose up to four images, up to 5 MB each.</small></label>
+      <label>{service ? "Replace photos (optional)" : "Service photos"}<Input name="images" type="file" accept={imageTypes} multiple required={!service} /><small>Choose up to four images, up to {imageUploadMaxMb} MB each.</small></label>
       <div className="actions"><Button disabled={busy}>{busy ? "Submitting…" : "Submit for review"}</Button><Button variant="ghost" asChild><Link href="/dashboard/vendor/my-services">Cancel</Link></Button></div>
     </form></>;
 }

@@ -308,6 +308,19 @@ npm.cmd test
 
 The integration test creates and removes its own test database. It covers authentication, role restrictions, bookings, moderation, image uploads, and Stripe webhook processing.
 
+## Deploy Both Services on Vercel
+
+This deployment uses [Vercel Services](https://vercel.com/docs/services) and a single public domain. The root [`vercel.json`](vercel.json) sends `/api/*` and `/health` to Express and all other paths to Next.js. Both services are built from their own package roots.
+
+1. Import this repository in Vercel with **Root Directory** set to `./` and **Application Preset** set to **Services**.
+2. Set `NEXT_PUBLIC_WEDPLAN_MODE=services` and add `MONGODB_URI`, `MONGODB_DB`, and `BETTER_AUTH_SECRET` in the Production environment. Allow the deployed API to reach the Atlas cluster.
+3. Use the site's stable production origin for `FRONTEND_URL`, `BETTER_AUTH_URL`, and `PUBLIC_API_URL`. If these are unset, the API uses Vercel's `VERCEL_PROJECT_PRODUCTION_URL` when that system variable is available. Explicit values are useful for a custom origin. Keep `WEDPLAN_BACKEND_URL` empty in Services mode.
+4. Set `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` for Google Sign-In, `STRIPE_SECRET_KEY`, `STRIPE_PRICE_ID`, and `STRIPE_WEBHOOK_SECRET` for the Stripe sandbox, and `IMGBB_API_KEY` for optional mirroring. Save provider credentials as private environment values.
+5. Register the stable production origin's `/api/auth/callback/google` in Google Cloud and its `/api/payments/webhook` in Stripe. Use that new hosted webhook's signing secret.
+6. Deploy and test `/health`, `/api/services`, sign-in and dashboard refresh, image upload, and a Stripe sandbox checkout with webhook delivery.
+
+Vercel Services mode accepts images up to 4 MB per upload to fit the [Vercel Functions request limit](https://vercel.com/docs/functions/limitations#request-body-size). The separate Node or Render backend accepts images up to 5 MB.
+
 ## Deploy from This Repository
 
 Connect both hosting projects to the `main` branch of this repository.

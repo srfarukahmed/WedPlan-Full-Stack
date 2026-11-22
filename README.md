@@ -354,16 +354,3 @@ Connect both hosting projects to the `main` branch of this repository.
 - Verify email and Google sign-in, refresh a private dashboard, and confirm the evaluator can access the Admin dashboard. Test bookings, image uploads, Stripe success and cancel, hosted webhook delivery, and the resulting vendor plan.
 
 See the [Render Blueprint reference](https://render.com/docs/blueprint-spec) and [Vercel monorepo guide](https://vercel.com/docs/monorepos).
-
-## Assignment Submission
-
-- Use the separate client and server repositories listed above for the assignment. The combined repository is available for deployment.
-- Verify at least 20 meaningful client commits and 12 meaningful server commits in their respective repositories.
-- Fill in the live frontend and API links after deployment.
-- Share the evaluation admin credentials through the private submission channel.
-
-### Evaluation Details
-
-- Admin email:
-- Admin password (private submission only):
-- Additional evaluation instructions:

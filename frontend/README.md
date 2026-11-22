@@ -465,7 +465,6 @@ WedPlan is deployed using Vercel.
 **Production Website:**
 
 https://wedplan-full-stack.vercel.app
-https://wedplan-faruk.vercel.app/
 
 
 

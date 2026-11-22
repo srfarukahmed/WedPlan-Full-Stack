@@ -11,7 +11,7 @@ import { marketplace } from "./routes/marketplace.js";
 import { paymentRoutes } from "./routes/payments.js";
 import { fail } from "./validation.js";
 
-export function createApp(config, stores, { stripe } = {}) {
+export function createApp(config, stores, { stripe, uploadMaxMb = 5 } = {}) {
   const app = express();
   const images = imageStore(config, stores);
   const auth = createAuth(config, stores, images.owns);
@@ -38,7 +38,7 @@ export function createApp(config, stores, { stripe } = {}) {
   app.use(express.json({ limit: "64kb" }));
 
   const uploadLimit = rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: "draft-8", legacyHeaders: false, message: { message: "Too many image uploads. Try again shortly." } });
-  const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 5 * 1024 * 1024, files: 1, fields: 1, fieldSize: 32 } });
+  const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: uploadMaxMb * 1024 * 1024, files: 1, fields: 1, fieldSize: 32 } });
   app.post("/api/uploads", uploadLimit, upload.single("image"), (req, res, next) => {
     const { purpose } = req.body ?? {};
     if (!["registration", "profile", "service"].includes(purpose)) throw fail(400, "Select a valid upload purpose.");
@@ -54,7 +54,7 @@ export function createApp(config, stores, { stripe } = {}) {
   app.use((error, _req, res, next) => {
     if (res.headersSent) return next(error);
     if (error instanceof ZodError) return res.status(400).json({ message: error.issues.map((issue) => [issue.path.join("."), issue.message].filter(Boolean).join(" — ")).join(" ") });
-    if (error instanceof multer.MulterError) return res.status(400).json({ message: error.code === "LIMIT_FILE_SIZE" ? "Choose an image under 5 MB." : "Upload one image at a time." });
+    if (error instanceof multer.MulterError) return res.status(400).json({ message: error.code === "LIMIT_FILE_SIZE" ? "Choose an image up to " + uploadMaxMb + " MB." : "Upload one image at a time." });
     if (error.type === "entity.parse.failed") return res.status(400).json({ message: "Invalid JSON body." });
     if (error.type === "entity.too.large") return res.status(413).json({ message: "Request is too large." });
     if (Number.isInteger(error.status) && error.status >= 400 && error.status < 600) return res.status(error.status).json({ message: error.message });

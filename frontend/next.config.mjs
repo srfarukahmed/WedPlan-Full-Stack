@@ -1,4 +1,4 @@
-const backend = process.env.WEDPLAN_BACKEND_URL?.replace(/\/$/, "");
+const backend = process.env.NEXT_PUBLIC_WEDPLAN_MODE === "services" ? undefined : process.env.WEDPLAN_BACKEND_URL?.replace(/\/$/, "");
 
 export default {
   async rewrites() {
